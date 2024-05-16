@@ -1,0 +1,20 @@
+{
+    "TITLE": "Want to discover new music?",
+    "SONG_LOOKUP_ERROR": "There was an error while looking up for songs.",
+    "SONG_LOOKUP_SUCESS": "Tracks loaded successfully",
+    "LOGGED_IN": "Logged in as",
+    "NOT_LOGGED_IN": "You are not logged in",
+    "TRACK_SEED_LOOKUP": "Paste the track seed to look up...",
+    "LOOK_UP": "Look up",
+    "LOOK_UP_FIRST": "Look up some tracks first",
+    "X_TRACKS_FOUND": "tracks were found",
+    "NO_TRACKS_FOUND": "No tracks were found",
+    "LOG_IN": "Log In",
+    "LOG_OUT": "Log Out",
+    "SEED_EXAMPLE": "E.g. spotify:track:1vzqcPRQ6P1Uw7NZ5M77wJ",
+    "CREATE_PLAYLIST": "Create playlist",
+    "PLAYLIST_CREATE_SUCCESS": "Playlist created sucessfully",
+    "PLAYLIST_CREATE_ERROR": "There was an error while creating the playlist",
+    "PLAYLIST_UPDATE_ERROR": "There was an error while adding the tracks to the playlist",
+    "SELECT_LANGUAGE": "Select Language"
+}
