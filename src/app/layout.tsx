@@ -3,7 +3,7 @@
 import { Inter } from 'next/font/google'
 import { StrictMode } from 'react'
 import { SessionProvider } from 'next-auth/react'
-import ToastProvider from './ToastProvider';
+import ToastProvider from './components/ToastProvider';
 import "./i18n"
 
 import "./globals.css"

@@ -16,122 +16,21 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link"
-import ThemeToggle from './ThemeToggler';
-import LanguageToogle from './LanguageToggle';
+import LanguageToogle from './components/LanguageToggle';
+import Login from './components/Login';
+
+import { Track, RecommendationSeed, Image, PlaylistUser, Session } from './types/types';
 
 interface HomeState {
 	seed: string
 }
 
-interface RecommendationSeed {
-	afterFilteringSize: number
-	afterRelinkingSize: number
-	href: string
-	id: string
-	initialPoolSize: number
-	type: "artist" | "track" | "genre"
-}
-
-interface Image {
-	url: string
-	height: number
-	width: number
-}
-
-interface SimplifiedArtist {
-	external_urls: {
-		spotify: string
-	}
-	href: string
-	id: string
-	name: string
-	type: string
-	uri: string
-}
-
-interface Artist extends SimplifiedArtist {
-	followers: {
-		href: string | null
-		total: number
-	}
-	genres: string[]
-	images: Image[]
-	popularity: number
-}
-
-interface Album {
-	album_type: string
-	total_tracks: number
-	available_markets: string[]
-	external_urls: {
-		spotify: string
-	}
-	href: string
-	id: string
-	images: Image[]
-	name: string
-	release_date: string
-	release_date_precision: string
-	restrictions: {
-		reason: "market" | "product" | "explicit"
-	}
-	type: string
-	uri: string
-	artists: SimplifiedArtist[]
-}
-
-interface Track {
-	album: Album
-	artists: Artist[]
-	available_markets: string[]
-	disc_number: number
-	duration_ms: number
-	explicit: boolean
-	external_ids: {
-		isrc: string
-		ean: string
-		upc: string
-	}
-	external_urls: {
-		spotify: string
-	}
-	href: string
-	id: string
-	is_playable: boolean
-	linked_from: object // What is this?
-	restrictions: {
-		reason: "market" | "product" | "explicit"
-	}
-	name: string
-	popularity: number
-	preview_url: string | null
-	track_number: number
-	type: "track"
-	uri: string
-	is_local: boolean
-}
-
-interface PlaylistUser {
-	external_urls: {
-		spotify: string
-	}
-	followers: {
-		href: string | null
-		total: number
-	}
-	href: string
-	id: string
-	type: "user"
-	uri: string
-	display_name: string | null
-}
-
-interface RecommendationResponse {
+export interface RecommendationResponse {
 	tracks: Track[]
 	seeds: RecommendationSeed[]
 }
 
-interface CreatePlaylistResponse {
+export interface CreatePlaylistResponse {
 	collaborative: boolean
 	description: string | null
 	external_urls: {
@@ -166,17 +65,6 @@ interface CreatePlaylistResponse {
 	uri: string
 }
 
-interface Session {
-	accessToken: string
-	expires: string
-	user: {
-		id: string
-		name: string
-		image: string
-		email: string
-	}
-}
-
 interface PlaylistData {
 	url: string
 	id: string
@@ -204,8 +92,8 @@ function getTrackID(text: string): string {
 }
 
 export default function Home(): JSX.Element {
-	const { t, i18n } = useTranslation();
-	const { data: session, status } = useSession();
+	const {t, i18n} = useTranslation();
+	const {data: session, status} = useSession();
 	const [auth, setAuth] = useState<Session | null>(null);
 
 	// Playlist
@@ -263,6 +151,7 @@ export default function Home(): JSX.Element {
 					},
 					body: JSON.stringify({
 						name: "Music Discovery Playlist"
+						// TODO: description with based song
 					})
 				}]
 				: null,
@@ -311,34 +200,37 @@ export default function Home(): JSX.Element {
     	  </Head>
     	  <main>
 			<Stack direction="column" className={styles.container}>
+				<LanguageToogle />
 				<Stack direction="row">
 					<h1 className={styles.topTitle}>{t("TITLE")}</h1>
 				</Stack>
-				<LanguageToogle />
-				<Typography style={{ marginTop: 10 }}>{auth !== null ? `${t("LOGGED_IN")} ${auth.user.name}` : t("NOT_LOGGED_IN")}</Typography>
-				{status === "authenticated" 
-				? <Button variant="outlined" onClick={() => {signOut()}}>{t("LOG_OUT")}</Button> 
-				: <Button variant="outlined" onClick={() => {signIn()}}>{t("LOG_IN")}</Button>}
-				<Stack direction="row" spacing={2} style={{ marginTop:30 }}>
-					<TextField label={t("TRACK_SEED_LOOKUP")} variant="outlined" onChange={(o) => {const h = homeState; h.seed = getTrackID(o.target.value); setHomeState(h)}}/>
-					<Button variant="outlined" onClick={() => {setShouldFetch(true)}}>{t("LOOK_UP")}</Button>
-				</Stack>
-				<Typography component="p" fontSize={13} style={{ marginTop: 8 }}>{t("SEED_EXAMPLE")}</Typography>
-			</Stack>
-    	    
-			<Stack direction="column" className={styles.container}>
-				<Typography component="p">{
-					recommendationData === null
-					? t("LOOK_UP_FIRST")
-					: recommendationData.tracks.length > 0
-						? `${recommendationData.tracks.length} ${t("X_TRACKS_FOUND")}`
-						: t("NO_TRACKS_FOUND")
-				}</Typography>
-				<Button variant="outlined" onClick={() => {setCreatePlaylist(true)}} style={{marginBottom: 20}}>{t("CREATE_PLAYLIST")}</Button>
-				{playlistDataState !== null
+				<Login auth={auth} status={status} />
+				{status === "authenticated"
 					? <>
-						<Typography component="p">Playlist URL: </Typography>
-						<Link href={playlistDataState.url} target="_blank" rel="noopener">{playlistDataState.url}</Link>
+						<Stack direction="row" spacing={2} style={{ marginTop:30, width: "100%" }}>
+							<TextField fullWidth label={t("TRACK_SEED_LOOKUP")} variant="outlined" onChange={(o) => {const h = homeState; h.seed = getTrackID(o.target.value); setHomeState(h)}}/>
+							<Button variant="outlined" onClick={() => {setShouldFetch(true)}}>{t("LOOK_UP")}</Button>
+						</Stack>
+						<Typography component="p" fontSize={13} style={{ marginTop: 8 }}>{t("SEED_EXAMPLE")}</Typography>
+
+						{ recommendationData === null
+							? null
+							: <Stack direction="column" className={styles.container}>
+								<Typography component="p">{
+									recommendationData === null
+									? t("LOOK_UP_FIRST")
+									: recommendationData.tracks.length > 0
+										? `${recommendationData.tracks.length} ${t("X_TRACKS_FOUND")}`
+										: t("NO_TRACKS_FOUND")
+								}</Typography>
+								<Button variant="outlined" onClick={() => {setCreatePlaylist(true)}} style={{marginBottom: 20}}>{t("CREATE_PLAYLIST")}</Button>
+								{playlistDataState !== null
+									? <>
+										<Typography component="p">Playlist URL: </Typography>
+										<Link href={playlistDataState.url} target="_blank" rel="noopener">{playlistDataState.url}</Link>
+									</>
+									: null}
+							</Stack>}
 					</>
 					: null}
 			</Stack>

@@ -1,0 +1,8 @@
+@media (min-width: 1000px) {
+    .languageToggleContainer {
+        position: fixed;
+        right: 70px;
+        top: 30px;
+        margin-bottom: 60px;
+    }
+}
