@@ -19,7 +19,7 @@ import Link from "@mui/material/Link"
 import LanguageToogle from './components/LanguageToggle';
 import Login from './components/Login';
 
-import { Track, RecommendationSeed, Image, PlaylistUser, Session } from './types/types';
+import { Track, RecommendationSeed, Image, PlaylistUser, Session, Album, Artist } from './types/types';
 
 interface HomeState {
 	seed: string
@@ -93,13 +93,10 @@ function getTrackID(text: string): string {
 
 export default function Home(): JSX.Element {
 	const {t, i18n} = useTranslation();
+
+	// Authentication
 	const {data: session, status} = useSession();
 	const [auth, setAuth] = useState<Session | null>(null);
-
-	// Playlist
-	const [createPlaylist, setCreatePlaylist] = useState<boolean>(false);
-	const [updatePlaylist, setUpdatePlaylist] = useState<boolean>(false);
-	const [playlistDataState, setPlaylistData] = useState<PlaylistData | null>(null);
 
 	useEffect(() => {
 		if (status === 'loading') {
@@ -114,13 +111,14 @@ export default function Home(): JSX.Element {
 		}
 	}, [session, status]);
 
+	// Recommendation
+	const [homeState, setHomeState] = useState<HomeState>({seed: ""});
+	const [baseTrackData, setBaseTrackData] = useState<Track | null>(null);
+	const [shouldFetchBaseTrack, setShouldFetchBaseTrack] = useState<boolean>(false);
 	const [recommendationData, setRecommendationData] = useState<RecommendationResponse | null>(null);
-	const [homeState, setHomeState] = useState<HomeState>({
-		seed: ""
-	});
-	const [shouldFetch, setShouldFetch] = useState<boolean>(false);
+	const [shouldFetchRecommendation, setShouldFetchRecommendation] = useState<boolean>(false);
 	const {data, error, isLoading} = useSWR<RecommendationResponse, Error>(
-		shouldFetch 
+		shouldFetchRecommendation 
 			? [`https://api.spotify.com/v1/recommendations?limit=100&seed_tracks=${homeState.seed}`, {
 				method: "GET",
 				headers: { // no cache
@@ -138,9 +136,30 @@ export default function Home(): JSX.Element {
 			toast(t("SONG_LOOKUP_SUCESS"), { type: "success" })
 			setRecommendationData(data);
 		}
-		setShouldFetch(false);
+		setShouldFetchRecommendation(false);
 	}
 
+	const {data: APIBaseTrackData, error: APIBaseTrackError, isLoading: APIBaseTrackIsLoading} = useSWR<Track, Error>(
+		shouldFetchBaseTrack
+			? [`https://api.spotify.com/v1/tracks/${homeState.seed}`, {
+				method: "GET",
+				headers: { // no cache
+					"Authorization": `Bearer ${auth?.accessToken}`
+				}
+			}]
+			: null,
+			([url, options]: [string, RequestInit]) => fetcher(url, options)
+	)
+
+	if (APIBaseTrackData) {
+		setBaseTrackData(APIBaseTrackData);
+		setShouldFetchBaseTrack(false);
+	}
+
+	// Playlist
+	const [createPlaylist, setCreatePlaylist] = useState<boolean>(false);
+	const [updatePlaylist, setUpdatePlaylist] = useState<boolean>(false);
+	const [playlistDataState, setPlaylistData] = useState<PlaylistData | null>(null);
 
 	const {data: playlistData, error: playlistError, isLoading: playlistIsLoading} = useSWR<CreatePlaylistResponse, Error>(
 			createPlaylist 
@@ -150,7 +169,8 @@ export default function Home(): JSX.Element {
 						"Authorization": `Bearer ${auth?.accessToken}`
 					},
 					body: JSON.stringify({
-						name: "Music Discovery Playlist"
+						name: "Music Discovery Playlist",
+						description: `Playlist based on "${baseTrackData?.name}" by "${baseTrackData?.artists[0].name}"`
 						// TODO: description with based song
 					})
 				}]
@@ -209,7 +229,7 @@ export default function Home(): JSX.Element {
 					? <>
 						<Stack direction="row" spacing={2} style={{ marginTop:30, width: "100%" }}>
 							<TextField fullWidth label={t("TRACK_SEED_LOOKUP")} variant="outlined" onChange={(o) => {const h = homeState; h.seed = getTrackID(o.target.value); setHomeState(h)}}/>
-							<Button variant="outlined" onClick={() => {setShouldFetch(true)}}>{t("LOOK_UP")}</Button>
+							<Button variant="outlined" onClick={() => {setShouldFetchRecommendation(true); setShouldFetchBaseTrack(true)}}>{t("LOOK_UP")}</Button>
 						</Stack>
 						<Typography component="p" fontSize={13} style={{ marginTop: 8 }}>{t("SEED_EXAMPLE")}</Typography>
 
