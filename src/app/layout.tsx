@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import { StrictMode } from 'react'
 import { SessionProvider } from 'next-auth/react'
 import ToastProvider from './components/ToastProvider';
+import { Analytics } from "@vercel/analytics/react"
 import "./i18n"
 
 import "./globals.css"
@@ -33,6 +34,7 @@ export default function RootLayout({
             <body className={inter.className}>
               <ToastProvider>
                 {children}
+                <Analytics />
               </ToastProvider>
             </body>
           </html>
