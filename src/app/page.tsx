@@ -122,7 +122,7 @@ export default function Home(): JSX.Element {
 			? [`https://api.spotify.com/v1/recommendations?limit=100&seed_tracks=${homeState.seed}`, {
 				method: "GET",
 				headers: { // no cache
-					"Authorization": `Bearer ${auth?.accessToken}`
+					"Authorization": `{'Authorization': 'Bearer ${auth?.token}'}`
 				}
 			}]
 			: null,

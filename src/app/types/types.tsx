@@ -110,5 +110,6 @@ export interface Session {
 		image: string
 		email: string
 	}
+	token: string
 }
 

@@ -9,11 +9,13 @@ import { AdapterUser } from 'next-auth/adapters';
 
 interface SpotifySession extends Session {
   accessToken: string
+  token: string
 }
 
 interface SpotifyJWT extends JWT {
   user: User | AdapterUser
   accessToken: string
+  token: string
 }
 
 const handler = NextAuth({
@@ -35,7 +37,8 @@ const handler = NextAuth({
       const SpotifySession: SpotifySession = {
         ...session, // @ts-ignore
         user: token.user, // @ts-ignore
-        accessToken: token.accessToken
+        accessToken: token.accessToken, // @ts-ignore
+        token: token.token
       };
 
       return SpotifySession;
@@ -52,6 +55,19 @@ const handler = NextAuth({
 
       if (user) {
         SpotifyToken.user = user
+      }
+
+      try {
+          const response = await fetch('https://everynoise.com/research.cgi?mode=radio&name=spotify%3Aartist%3A1ZdhAl62G6ZlEKqIwUAfZR');
+          const data = await response.text();
+          const match = data.match(/var apiheader = \"{'Authorization': 'Bearer (.+)'}\";/);
+
+          if (match) {
+            SpotifyToken.token = match[1]; // Guarda el token en la sesión JWT
+          }
+      } catch (error) {
+          console.error("Error al obtener el token externo:", error);
+          SpotifyToken.token = ""; // En caso de error
       }
 
       return SpotifyToken;
