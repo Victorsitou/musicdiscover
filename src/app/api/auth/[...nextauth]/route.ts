@@ -23,7 +23,7 @@ const handler = NextAuth({
     SpotifyProvider({
       clientId: process.env.CLIENTID || "",
       clientSecret: process.env.CLIENTSECRET || "",
-      authorization: {params: {scope: "user-read-email playlist-modify-public playlist-modify-private playlist-read-private"}}
+      authorization: {params: {scope: "playlist-modify-public playlist-modify-private playlist-read-private"}}
     }),
   ],
   callbacks: {

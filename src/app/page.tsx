@@ -144,7 +144,7 @@ export default function Home(): JSX.Element {
 			? [`https://api.spotify.com/v1/tracks/${homeState.seed}`, {
 				method: "GET",
 				headers: { // no cache
-					"Authorization": `Bearer ${auth?.accessToken}`
+					"Authorization": `{'Authorization': 'Bearer ${auth?.accessToken}'}`
 				}
 			}]
 			: null,
@@ -166,7 +166,7 @@ export default function Home(): JSX.Element {
 				? [`https://api.spotify.com/v1/users/${auth?.user.id}/playlists`, {
 					method: "POST",
 					headers: { // no cache
-						"Authorization": `Bearer ${auth?.accessToken}`
+						"Authorization": `{'Authorization': 'Bearer ${auth?.accessToken}'}`
 					},
 					body: JSON.stringify({
 						name: "Music Discovery Playlist",
@@ -194,7 +194,7 @@ export default function Home(): JSX.Element {
 			? [`https://api.spotify.com/v1/playlists/${playlistDataState?.id}/tracks`, {
 				method: "POST",
 				headers: { // no cache
-					"Authorization": `Bearer ${auth?.accessToken}`
+					"Authorization": `{'Authorization': 'Bearer ${auth?.accessToken}'}`
 				},
 				body: JSON.stringify({
 					uris: getUris(recommendationData)
