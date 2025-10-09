@@ -1,4 +1,3 @@
-// Página donde se maneja el inicio de sesión con Spotify (por ejemplo, pages/login.js)
 "use client";
 
 import { signIn } from 'next-auth/react';

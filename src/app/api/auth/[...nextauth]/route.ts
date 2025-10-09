@@ -1,5 +1,3 @@
-// Archivo next-auth.js
-
 import NextAuth from 'next-auth';
 import SpotifyProvider from 'next-auth/providers/spotify';
 import { Session } from 'next-auth';
