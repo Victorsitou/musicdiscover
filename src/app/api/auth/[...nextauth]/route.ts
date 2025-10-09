@@ -19,8 +19,8 @@ interface SpotifyJWT extends JWT {
 const handler = NextAuth({
   providers: [
     SpotifyProvider({
-      clientId: process.env.SPOTIFY_CLIENT_ID || "",
-      clientSecret: process.env.SPOTIFY_CLIENT_SECRET || "",
+      clientId: process.env.SPOTIFY_CLIENT_ID!,
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
       authorization: {params: {scope: "playlist-modify-public playlist-modify-private playlist-read-private"}}
     }),
   ],
