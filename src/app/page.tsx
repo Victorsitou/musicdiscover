@@ -171,7 +171,6 @@ export default function Home(): JSX.Element {
 					body: JSON.stringify({
 						name: "Music Discovery Playlist",
 						description: `Playlist based on "${baseTrackData?.name}" by "${baseTrackData?.artists[0].name}"`
-						// TODO: description with based song
 					})
 				}]
 				: null,
