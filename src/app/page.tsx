@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import useSWR from 'swr';
-import { fetcher } from "@public-src";
-import { useSession, signOut, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { toast } from "react-toastify"
 import { useTranslation } from 'react-i18next';
 
@@ -20,7 +18,7 @@ import LanguageToogle from './components/LanguageToggle';
 import ProviderToggle from './components/ProviderToggle';
 import Login from './components/Login';
 
-import { Track, RecommendationSeed, Image, PlaylistUser, Session, Album, Artist, Provider } from './types/types';
+import { Track, RecommendationSeed, Image, PlaylistUser, Session, Provider, Playlist } from './types/types';
 import { fetchRecommendations, fetchBaseTrack, createPlaylist, updatePlaylist } from './lib/routes';
 import { getProviderPref } from './lib/prefs';
 
@@ -128,7 +126,7 @@ export default function Home(): JSX.Element {
 	const [recommendationData, setRecommendationData] = useState<RecommendationResponse | null>(null);
 
 	const _fetchRecommendations = async () => {
-		if (homeState.seed === "") return; // TODO: can this happen?
+		if (homeState.seed === "") return;
 
 		try {
 			const data = await fetchRecommendations(homeState.seed, provider, provider === Provider.SPOTIFY ? auth?.token : undefined);
@@ -148,7 +146,7 @@ export default function Home(): JSX.Element {
 			const data = await fetchBaseTrack(homeState.seed, auth?.accessToken || "")
 			setBaseTrackData(data)
 		} catch(error) {
-			// TODO: implement errror
+			console.log("There was an error fetching the base track data", error)
 		}
 	}
 
@@ -156,15 +154,17 @@ export default function Home(): JSX.Element {
 	const [playlistDataState, setPlaylistData] = useState<PlaylistData | null>(null);
 
 	const _createPlaylist = async () => {
-		if (!auth) return; // TODO: when does this happen?
+		if (!auth) return;
 
-		let playlistData = undefined
+		let playlistData: Playlist | undefined = undefined
 		try {
 			playlistData = await createPlaylist(auth.user.id, auth.accessToken, "Music Discovery Playlist", `Playlist based on "${baseTrackData?.name} by ${baseTrackData?.artists[0].name}"`)
 		} catch (error) {
 			toast(t("PLAYLIST_CREATE_ERROR"), {type:"error"})
 			return
 		}
+
+		if(!playlistData) return
 
 		try {
 			await updatePlaylist(playlistData.id, auth.accessToken, getUris(recommendationData, provider))
