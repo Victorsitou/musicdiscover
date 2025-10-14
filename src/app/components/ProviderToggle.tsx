@@ -18,7 +18,7 @@ export default function ProviderToggle({setProvider}: {setProvider: (provider: P
 
 	return (
 		<div>
-			<FormControl>
+			<FormControl sx={{minWidth: 160 }}>
 				<InputLabel shrink htmlFor="uncontrolled-native">{t("SELECT_PROVIDER")}</InputLabel>
 				<Select
 					defaultValue="spotify"
