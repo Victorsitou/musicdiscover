@@ -12,17 +12,22 @@ import US from "country-flag-icons/react/3x2/US";
 import ES from "country-flag-icons/react/3x2/ES";
 
 import { Provider } from '../types/types';
+import { setProviderPref } from '../lib/prefs';
 
-export default function ProviderToggle({setProvider}: {setProvider: (provider: Provider) => void}) {
-	const { t, i18n } = useTranslation();
+export default function ProviderToggle({defaultProvider, setProvider}: {defaultProvider: Provider, setProvider: (provider: Provider) => void}) {
+	const { t } = useTranslation();
+
+	const handleChange = (event: any) => {
+		setProviderPref(event.target.value as Provider)
+	}
 
 	return (
 		<div>
 			<FormControl sx={{minWidth: 160 }}>
 				<InputLabel shrink htmlFor="uncontrolled-native">{t("SELECT_PROVIDER")}</InputLabel>
 				<Select
-					defaultValue="spotify"
-					onChange={(e) => setProvider(e.target.value as Provider)}
+					defaultValue={defaultProvider}
+					onChange={(e) => handleChange(e)}
 					autoWidth
 					label={t("SELECT_PROVIDER")}
 				>

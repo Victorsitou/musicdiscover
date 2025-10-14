@@ -22,6 +22,7 @@ import Login from './components/Login';
 
 import { Track, RecommendationSeed, Image, PlaylistUser, Session, Album, Artist, Provider } from './types/types';
 import { fetchRecommendations, fetchBaseTrack, createPlaylist, updatePlaylist } from './lib/routes';
+import { getProviderPref } from './lib/prefs';
 
 interface HomeState {
 	seed: string
@@ -121,7 +122,7 @@ export default function Home(): JSX.Element {
 	}, [session, status]);
 
 	// Recommendation
-	const [provider, setProvider] = useState<Provider>(Provider.SPOTIFY)
+	const [provider, setProvider] = useState<Provider>(getProviderPref())
 	const [homeState, setHomeState] = useState<HomeState>({seed: ""});
 	const [baseTrackData, setBaseTrackData] = useState<Track | null>(null);
 	const [recommendationData, setRecommendationData] = useState<RecommendationResponse | null>(null);
@@ -183,7 +184,7 @@ export default function Home(): JSX.Element {
 			<Stack direction="column" className={styles.container}>
 				<Stack direction="row" spacing={1} sx={{ justifyContent: "flex-start", alignItems: "center" }}>
 					<LanguageToogle />
-					<ProviderToggle setProvider={setProvider} />
+					<ProviderToggle defaultProvider={provider} setProvider={setProvider} />
 				</Stack>
 				<Stack direction="row">
 					<h1 className={styles.topTitle}>{t("TITLE")}</h1>
