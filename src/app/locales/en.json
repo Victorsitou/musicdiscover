@@ -17,5 +17,6 @@
     "PLAYLIST_CREATE_ERROR": "There was an error while creating the playlist",
     "PLAYLIST_UPDATE_ERROR": "There was an error while adding the tracks to the playlist",
     "SELECT_LANGUAGE": "Select Language",
-    "SELECT_PROVIDER": "Select Provider"
+    "SELECT_PROVIDER": "Select Provider",
+    "PLAYLIST_DESCRIPTION": "Playlist based on \"{{song}} by {{artist}}\""
 }

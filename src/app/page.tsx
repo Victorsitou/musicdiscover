@@ -158,7 +158,7 @@ export default function Home(): JSX.Element {
 
 		let playlistData: Playlist | undefined = undefined
 		try {
-			playlistData = await createPlaylist(auth.user.id, auth.accessToken, "Music Discovery Playlist", `Playlist based on "${baseTrackData?.name} by ${baseTrackData?.artists[0].name}"`)
+			playlistData = await createPlaylist(auth.user.id, auth.accessToken, "Music Discovery Playlist", t("PLAYLIST_DESCRIPTION", {song: baseTrackData?.name, artist: baseTrackData?.artists[0].name}))
 		} catch (error) {
 			toast(t("PLAYLIST_CREATE_ERROR"), {type:"error"})
 			return
