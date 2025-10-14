@@ -181,11 +181,12 @@ export default function Home(): JSX.Element {
     	    <title>{t("TITLE")}</title>
     	  </Head>
     	  <main>
+			<h1 style={{textAlign: "center"}}>Music Discover</h1>
+			<Stack direction="row" spacing={1} sx={{ justifyContent: "center", alignItems: "center" }}>
+				<LanguageToogle />
+				<ProviderToggle defaultProvider={provider} setProvider={setProvider} />
+			</Stack>
 			<Stack direction="column" className={styles.container}>
-				<Stack direction="row" spacing={1} sx={{ justifyContent: "flex-start", alignItems: "center" }}>
-					<LanguageToogle />
-					<ProviderToggle defaultProvider={provider} setProvider={setProvider} />
-				</Stack>
 				<Stack direction="row">
 					<h1 className={styles.topTitle}>{t("TITLE")}</h1>
 				</Stack>

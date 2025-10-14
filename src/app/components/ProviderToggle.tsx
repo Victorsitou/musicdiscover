@@ -7,9 +7,11 @@ import Select from "@mui/material/Select"
 import FormControl from "@mui/material/FormControl"
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from "@mui/material/InputLabel"
+import Box from "@mui/material/Box"
 
-import US from "country-flag-icons/react/3x2/US";
-import ES from "country-flag-icons/react/3x2/ES";
+import ReccoPNG from "@public/recco.png"
+import SpotifyPNG from "@public/spotify.png"
+import Image from "next/image"
 
 import { Provider } from '../types/types';
 import { setProviderPref } from '../lib/prefs';
@@ -31,8 +33,18 @@ export default function ProviderToggle({defaultProvider, setProvider}: {defaultP
 					autoWidth
 					label={t("SELECT_PROVIDER")}
 				>
-					<MenuItem value={Provider.SPOTIFY}><MenuIcon text="Spotify" icon={<US />}/></MenuItem>
-					<MenuItem value={Provider.RECCO}><MenuIcon text="Recco" icon={<ES />}/></MenuItem>
+					<MenuItem value={Provider.SPOTIFY}>
+						<Box sx={{ display: "flex", alignItems: "center", gap: 1}}>
+							<Image src={SpotifyPNG} alt="Spotify" width={18} height={18} />
+							<span>Spotify</span>
+						</Box>
+					</MenuItem>
+					<MenuItem value={Provider.RECCO}>
+						<Box sx={{ display: "flex", alignItems: "center", gap: 1}}>
+							<Image src={ReccoPNG} alt="Recco" width={18} height={18} />
+							<span>Recco</span>
+						</Box>
+					</MenuItem>
 				</Select>
 			</FormControl>
 		</div>

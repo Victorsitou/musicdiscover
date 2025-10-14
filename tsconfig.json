@@ -25,7 +25,8 @@
     "paths": {
       "@public-src": [
         "./src/app/public.tsx"
-      ]
+      ],
+      "@public/*": ["./public/*"]
     },
     "target": "ES2017"
   },
