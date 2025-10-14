@@ -17,9 +17,11 @@ import Button from '@mui/material/Button';
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link"
 import LanguageToogle from './components/LanguageToggle';
+import ProviderToggle from './components/ProviderToggle';
 import Login from './components/Login';
 
-import { Track, RecommendationSeed, Image, PlaylistUser, Session, Album, Artist } from './types/types';
+import { Track, RecommendationSeed, Image, PlaylistUser, Session, Album, Artist, Provider } from './types/types';
+import { fetchRecommendations, fetchBaseTrack, createPlaylist, updatePlaylist } from './lib/routes';
 
 interface HomeState {
 	seed: string
@@ -70,12 +72,19 @@ interface PlaylistData {
 	id: string
 }
 
-function getUris(recommendationData: RecommendationResponse | null): string[] {
+function getUris(recommendationData: RecommendationResponse | null, provider: Provider): string[] {
 	if (!recommendationData) return []
-	const uris: string[] = []
-	recommendationData.tracks.forEach(track => {
-		uris.push(track.uri)
-	});
+
+	let uris: string[] = []
+	if(provider === Provider.SPOTIFY) {
+		recommendationData.tracks.forEach(track => {
+			uris.push(track.uri)
+		});
+	} else if (provider === Provider.RECCO) {
+		recommendationData.tracks.forEach(track => {
+			uris.push(`spotify:track:${getTrackID(track.href)}`)
+		})
+	}
 	return uris
 }
 
@@ -112,104 +121,57 @@ export default function Home(): JSX.Element {
 	}, [session, status]);
 
 	// Recommendation
+	const [provider, setProvider] = useState<Provider>(Provider.SPOTIFY)
 	const [homeState, setHomeState] = useState<HomeState>({seed: ""});
 	const [baseTrackData, setBaseTrackData] = useState<Track | null>(null);
-	const [shouldFetchBaseTrack, setShouldFetchBaseTrack] = useState<boolean>(false);
 	const [recommendationData, setRecommendationData] = useState<RecommendationResponse | null>(null);
-	const [shouldFetchRecommendation, setShouldFetchRecommendation] = useState<boolean>(false);
-	const {data, error, isLoading} = useSWR<RecommendationResponse, Error>(
-		shouldFetchRecommendation 
-			? [`https://api.spotify.com/v1/recommendations?limit=100&seed_tracks=${homeState.seed}`, {
-				method: "GET",
-				headers: { // no cache
-					"Authorization": `{'Authorization': 'Bearer ${auth?.token}'}`
-				}
-			}]
-			: null,
-			([url, options]: [string, RequestInit]) => fetcher(url, options)
-	);
 
-	if (data) {
-		if ("error" in data){
-			toast(t("SONG_LOOKUP_ERROR"), { type: "error" })
-		} else {
-			toast(t("SONG_LOOKUP_SUCESS"), { type: "success" })
-			setRecommendationData(data);
+	const _fetchRecommendations = async () => {
+		if (homeState.seed === "") return; // TODO: can this happen?
+
+		try {
+			const data = await fetchRecommendations(homeState.seed, provider, provider === Provider.SPOTIFY ? auth?.token : undefined);
+			toast(t("SONG_LOOKUP_SUCESS"), {type:"success"})
+			if(provider === Provider.RECCO) data.tracks = data.content // Recco uses "content" instead of "tracks"
+			setRecommendationData(data)
+		} catch (error) {
+			toast(t("SONG_LOOKUP_ERROR"), {type:"error"})
 		}
-		setShouldFetchRecommendation(false);
 	}
+ 	
 
-	const {data: APIBaseTrackData, error: APIBaseTrackError, isLoading: APIBaseTrackIsLoading} = useSWR<Track, Error>(
-		shouldFetchBaseTrack
-			? [`https://api.spotify.com/v1/tracks/${homeState.seed}`, {
-				method: "GET",
-				headers: { // no cache
-					"Authorization": `{'Authorization': 'Bearer ${auth?.accessToken}'}`
-				}
-			}]
-			: null,
-			([url, options]: [string, RequestInit]) => fetcher(url, options)
-	)
+	const _fetchBaseTrack = async () => {
+		if (homeState.seed === "") return;
 
-	if (APIBaseTrackData) {
-		setBaseTrackData(APIBaseTrackData);
-		setShouldFetchBaseTrack(false);
+		try {
+			const data = await fetchBaseTrack(homeState.seed, auth?.accessToken || "")
+			setBaseTrackData(data)
+		} catch(error) {
+			// TODO: implement errror
+		}
 	}
 
 	// Playlist
-	const [createPlaylist, setCreatePlaylist] = useState<boolean>(false);
-	const [updatePlaylist, setUpdatePlaylist] = useState<boolean>(false);
 	const [playlistDataState, setPlaylistData] = useState<PlaylistData | null>(null);
 
-	const {data: playlistData, error: playlistError, isLoading: playlistIsLoading} = useSWR<CreatePlaylistResponse, Error>(
-			createPlaylist 
-				? [`https://api.spotify.com/v1/users/${auth?.user.id}/playlists`, {
-					method: "POST",
-					headers: { // no cache
-						"Authorization": `{'Authorization': 'Bearer ${auth?.accessToken}'}`
-					},
-					body: JSON.stringify({
-						name: "Music Discovery Playlist",
-						description: `Playlist based on "${baseTrackData?.name}" by "${baseTrackData?.artists[0].name}"`
-					})
-				}]
-				: null,
-				([url, options]: [string, RequestInit]) => fetcher(url, options)
-	);
+	const _createPlaylist = async () => {
+		if (!auth) return; // TODO: when does this happen?
 
-
-	if (playlistData) {
-		if ("error" in playlistData) {
-			toast(t("PLAYLIST_CREATE_ERROR"), { type: "error" })
-		} else {
-			setPlaylistData({id: playlistData.id, url: playlistData.external_urls.spotify})
-			setUpdatePlaylist(true);
+		let playlistData = undefined
+		try {
+			playlistData = await createPlaylist(auth.user.id, auth.accessToken, "Music Discovery Playlist", `Playlist based on "${baseTrackData?.name} by ${baseTrackData?.artists[0].name}"`)
+		} catch (error) {
+			toast(t("PLAYLIST_CREATE_ERROR"), {type:"error"})
+			return
 		}
-		setCreatePlaylist(false);
-	}
 
-	const {data: updatePlaylistData, error: updatePlaylistError, isLoading: updatePlaylistIsLoagins} = useSWR(
-		updatePlaylist && playlistDataState?.id !== ""
-			? [`https://api.spotify.com/v1/playlists/${playlistDataState?.id}/tracks`, {
-				method: "POST",
-				headers: { // no cache
-					"Authorization": `{'Authorization': 'Bearer ${auth?.accessToken}'}`
-				},
-				body: JSON.stringify({
-					uris: getUris(recommendationData)
-				})
-			}]
-			: null,
-			([url, options]: [string, RequestInit]) => fetcher(url, options)
-	);
-	
-	if (updatePlaylistData){
-		if ("error" in updatePlaylistData) {
-			toast(t("PLAYLIST_UPDATE_ERROR"), { type: "error" })
-		} else {
-			toast(t("PLAYLIST_CREATE_SUCCESS"), { type: "success" })
+		try {
+			await updatePlaylist(playlistData.id, auth.accessToken, getUris(recommendationData, provider))
+			toast(t("PLAYLIST_CREATE_SUCCESS"), {type:"success"})
+			setPlaylistData({url: playlistData.external_urls.spotify, id: playlistData.id})
+		} catch (error) {
+			toast(t("PLAYLIST_UPDATE_ERROR"), {type:"error"})
 		}
-		setUpdatePlaylist(false);
 	}
 
 	return (
@@ -219,7 +181,10 @@ export default function Home(): JSX.Element {
     	  </Head>
     	  <main>
 			<Stack direction="column" className={styles.container}>
-				<LanguageToogle />
+				<Stack direction="row" spacing={1} sx={{ justifyContent: "flex-start", alignItems: "center" }}>
+					<LanguageToogle />
+					<ProviderToggle setProvider={setProvider} />
+				</Stack>
 				<Stack direction="row">
 					<h1 className={styles.topTitle}>{t("TITLE")}</h1>
 				</Stack>
@@ -228,7 +193,10 @@ export default function Home(): JSX.Element {
 					? <>
 						<Stack direction="row" spacing={2} style={{ marginTop:30, width: "100%" }}>
 							<TextField fullWidth label={t("TRACK_SEED_LOOKUP")} variant="outlined" onChange={(o) => {const h = homeState; h.seed = getTrackID(o.target.value); setHomeState(h)}}/>
-							<Button variant="outlined" onClick={() => {setShouldFetchRecommendation(true); setShouldFetchBaseTrack(true)}}>{t("LOOK_UP")}</Button>
+							<Button variant="outlined" onClick={async () => {
+								await _fetchRecommendations();
+								await _fetchBaseTrack();
+								}}>{t("LOOK_UP")}</Button>
 						</Stack>
 						<Typography component="p" fontSize={13} style={{ marginTop: 8 }}>{t("SEED_EXAMPLE")}</Typography>
 
@@ -242,7 +210,7 @@ export default function Home(): JSX.Element {
 										? `${recommendationData.tracks.length} ${t("X_TRACKS_FOUND")}`
 										: t("NO_TRACKS_FOUND")
 								}</Typography>
-								<Button variant="outlined" onClick={() => {setCreatePlaylist(true)}} style={{marginBottom: 20}}>{t("CREATE_PLAYLIST")}</Button>
+								<Button variant="outlined" onClick={_createPlaylist} style={{marginBottom: 20}}>{t("CREATE_PLAYLIST")}</Button>
 								{playlistDataState !== null
 									? <>
 										<Typography component="p">Playlist URL: </Typography>

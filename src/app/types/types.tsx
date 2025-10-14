@@ -113,3 +113,7 @@ export interface Session {
 	token: string
 }
 
+export enum Provider {
+	SPOTIFY = "spotify",
+	RECCO = "recco"
+}

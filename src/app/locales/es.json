@@ -16,5 +16,6 @@
     "PLAYLIST_CREATE_SUCCESS": "Playlist creada exitosamente",
     "PLAYLIST_CREATE_ERROR": "Se ha producido un error al crear la playlist",
     "PLAYLIST_UPDATE_ERROR": "Se ha producido un error al añadir las canciones a la playlist",
-    "SELECT_LANGUAGE": "Seleccionar Idioma"
+    "SELECT_LANGUAGE": "Seleccionar Idioma",
+    "SELECT_PROVIDER": "Seleccionar Proveedor"
 }

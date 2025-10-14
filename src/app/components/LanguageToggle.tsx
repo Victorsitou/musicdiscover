@@ -21,7 +21,7 @@ export default function LanguageToogle() {
     }
 
     return (
-        <div  className={styles.languageToggleContainer}>
+        <div>
             <FormControl>
                 <InputLabel shrink htmlFor="uncontrolled-native">{t("SELECT_LANGUAGE")}</InputLabel>
                 <Select
