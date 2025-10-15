@@ -11,21 +11,22 @@ import InputLabel from "@mui/material/InputLabel"
 import US from "country-flag-icons/react/3x2/US";
 import ES from "country-flag-icons/react/3x2/ES";
 
-import styles from "./LanguageToggle.module.css"
+import { setLangPref } from '../lib/prefs';
 
 export default function LanguageToogle() {
     const { t, i18n } = useTranslation();
 
     const handleChange = (event: SelectChangeEvent) => {
         i18n.changeLanguage(event.target.value)
+        setLangPref(event.target.value as "en" | "es")
     }
 
     return (
-        <div  className={styles.languageToggleContainer}>
+        <div>
             <FormControl>
                 <InputLabel shrink htmlFor="uncontrolled-native">{t("SELECT_LANGUAGE")}</InputLabel>
                 <Select
-                    defaultValue="en"
+                    defaultValue={i18n.language}
                     onChange={handleChange}
                     autoWidth
                     label={t("SELECT_LANGUAGE")}

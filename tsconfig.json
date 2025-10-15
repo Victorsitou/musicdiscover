@@ -25,15 +25,19 @@
     "paths": {
       "@public-src": [
         "./src/app/public.tsx"
-      ]
-    }
+      ],
+      "@public/*": ["./public/*"]
+    },
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
-, "src/app/token/route.js", "src/app/api/auth/[...nextauth].js"  ],
+    ".next/types/**/*.ts",
+    "src/app/token/route.js",
+    "src/app/api/auth/[...nextauth].js"
+  ],
   "exclude": [
     "node_modules"
   ]
