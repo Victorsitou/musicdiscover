@@ -24,10 +24,10 @@ export function setLangPref(lang: LangPref) {
 
 // Provider
 export function getProviderPref(): Provider {
-  if (!isBrowser()) return Provider.SPOTIFY;
+  if (!isBrowser()) return Provider.RECCO;
 
   const provider = localStorage.getItem(KEYS.provider) as Provider | null;
-  return provider ? provider : Provider.SPOTIFY;
+  return provider ? provider : Provider.RECCO;
 }
 
 export function setProviderPref(provider: Provider) {

@@ -33,16 +33,16 @@ export default function ProviderToggle({defaultProvider, setProvider}: {defaultP
 					autoWidth
 					label={t("SELECT_PROVIDER")}
 				>
-					<MenuItem value={Provider.SPOTIFY}>
-						<Box sx={{ display: "flex", alignItems: "center", gap: 1}}>
-							<Image src={SpotifyPNG} alt="Spotify" width={18} height={18} />
-							<span>Spotify</span>
-						</Box>
-					</MenuItem>
 					<MenuItem value={Provider.RECCO}>
 						<Box sx={{ display: "flex", alignItems: "center", gap: 1}}>
 							<Image src={ReccoPNG} alt="Recco" width={18} height={18} />
 							<span>Recco</span>
+						</Box>
+					</MenuItem>
+					<MenuItem value={Provider.SPOTIFY}>
+						<Box sx={{ display: "flex", alignItems: "center", gap: 1}}>
+							<Image src={SpotifyPNG} alt="Spotify" width={18} height={18} />
+							<span>Spotify</span>
 						</Box>
 					</MenuItem>
 				</Select>
