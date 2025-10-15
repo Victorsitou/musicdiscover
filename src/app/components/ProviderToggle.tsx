@@ -20,6 +20,7 @@ export default function ProviderToggle({defaultProvider, setProvider}: {defaultP
 	const { t } = useTranslation();
 
 	const handleChange = (event: any) => {
+		setProvider(event.target.value as Provider)
 		setProviderPref(event.target.value as Provider)
 	}
 
