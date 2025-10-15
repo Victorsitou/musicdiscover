@@ -17,6 +17,7 @@ import Link from "@mui/material/Link"
 import LanguageToogle from './components/LanguageToggle';
 import ProviderToggle from './components/ProviderToggle';
 import Login from './components/Login';
+import Footer from './components/Footer';
 
 import { Track, RecommendationSeed, Image, PlaylistUser, Session, Provider, Playlist } from './types/types';
 import { fetchRecommendations, fetchBaseTrack, createPlaylist, updatePlaylist } from './lib/routes';
@@ -223,6 +224,7 @@ export default function Home(): JSX.Element {
 					</>
 					: null}
 			</Stack>
+			<Footer />
     	  </main>
     	</div>
   	);
