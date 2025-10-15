@@ -18,6 +18,7 @@ import LanguageToogle from './components/LanguageToggle';
 import ProviderToggle from './components/ProviderToggle';
 import Login from './components/Login';
 import Footer from './components/Footer';
+import ProviderNote from './components/ProviderNote';
 
 import { Track, RecommendationSeed, Image, PlaylistUser, Session, Provider, Playlist } from './types/types';
 import { fetchRecommendations, fetchBaseTrack, createPlaylist, updatePlaylist } from './lib/routes';
@@ -188,6 +189,7 @@ export default function Home(): JSX.Element {
 				<ProviderToggle defaultProvider={provider} setProvider={setProvider} />
 			</Stack>
 			<Stack direction="column" className={styles.container}>
+				{provider === Provider.SPOTIFY ? <ProviderNote /> : null}
 				<Stack direction="row">
 					<h1 className={styles.topTitle}>{t("TITLE")}</h1>
 				</Stack>
