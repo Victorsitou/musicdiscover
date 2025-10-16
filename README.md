@@ -4,6 +4,10 @@ You're in the right place!
 
 https://musicdiscover.vercel.app/
 
+### Disclaimer
+
+The [website](https://musicdiscover.vercel.app/) won't work if you try to use it because the Spotify app I'm using is not public. That means you won't be able to log in with your Spotify account. If you want to use it, you'll need to deploy your own version.
+
 ### How to deploy
 
 1. Clone this repository

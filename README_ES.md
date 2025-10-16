@@ -4,6 +4,10 @@
 
 https://musicdiscover.vercel.app/
 
+### Aclaración
+
+El [sitio web](https://musicdiscover.vercel.app/) no funcionará si intentas usarlo, porque la aplicación de Spotify que estoy utilizando no es pública. Eso significa que no podrás iniciar sesión con tu cuenta de Spotify. Si quieres usarlo, tendrás que desplegar tu propia versión.
+
 ### Cómo desplegar
 
 1. Clona este repositorio
