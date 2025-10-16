@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Trans, useTranslation } from "react-i18next";
 
-export default function ProviderNote() {
+export default function Note() {
   const { t } = useTranslation();
 
   return (
@@ -26,7 +26,7 @@ export default function ProviderNote() {
       <InfoOutlinedIcon color="primary" sx={{ mt: "2px" }} />
       <Typography variant="body2">
         <Trans
-          i18nKey="NOTE_SPOTIFY_PROVIDER"
+          i18nKey="NOTE_WEBSITE"
           t={t}
           components={[
             <strong />,

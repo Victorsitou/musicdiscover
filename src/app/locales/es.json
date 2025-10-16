@@ -19,5 +19,5 @@
   "SELECT_LANGUAGE": "Seleccionar Idioma",
   "SELECT_PROVIDER": "Seleccionar Proveedor",
   "PLAYLIST_DESCRIPTION": "Playlist basado en \"{{song}} por {{artist}}\"",
-  "NOTE_SPOTIFY_PROVIDER": "El proveedor <0>Spotify</0> solo funciona si usas tu propia app y credenciales de Spotify. Sigue los pasos en el <1>repositorio en GitHub</1>."
+  "NOTE_WEBSITE": "Esta página solo funciona si usas tu propia app y credenciales de Spotify. Revisa el <1>repositorio en GitHub</1> para más información."
 }
