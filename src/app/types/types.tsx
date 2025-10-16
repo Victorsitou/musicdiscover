@@ -113,6 +113,31 @@ export interface Session {
 	token: string
 }
 
+export interface Playlist {
+	collaborative: boolean
+	description: string | null
+	external_urls: {
+		spotify: string
+	}
+	href: string
+	id: string
+	images: Image[]
+	name: string
+	public: boolean
+	snapshot_id: string
+	tracks: {
+		href: string
+		limit: number
+		next: string | null
+		offset: number
+		previous: string | null
+		total: number
+		items: Track[]
+	}
+	type: string
+	uri: string
+}
+
 export enum Provider {
 	SPOTIFY = "spotify",
 	RECCO = "recco"

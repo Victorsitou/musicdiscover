@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import useSWR from 'swr';
-import { fetcher } from "@public-src";
-import { useSession, signOut, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { toast } from "react-toastify"
 import { useTranslation } from 'react-i18next';
 
@@ -19,9 +17,12 @@ import Link from "@mui/material/Link"
 import LanguageToogle from './components/LanguageToggle';
 import ProviderToggle from './components/ProviderToggle';
 import Login from './components/Login';
+import Footer from './components/Footer';
+import ProviderNote from './components/ProviderNote';
 
-import { Track, RecommendationSeed, Image, PlaylistUser, Session, Album, Artist, Provider } from './types/types';
+import { Track, RecommendationSeed, Image, PlaylistUser, Session, Provider, Playlist } from './types/types';
 import { fetchRecommendations, fetchBaseTrack, createPlaylist, updatePlaylist } from './lib/routes';
+import { getProviderPref } from './lib/prefs';
 
 interface HomeState {
 	seed: string
@@ -121,13 +122,13 @@ export default function Home(): JSX.Element {
 	}, [session, status]);
 
 	// Recommendation
-	const [provider, setProvider] = useState<Provider>(Provider.SPOTIFY)
+	const [provider, setProvider] = useState<Provider>(getProviderPref())
 	const [homeState, setHomeState] = useState<HomeState>({seed: ""});
 	const [baseTrackData, setBaseTrackData] = useState<Track | null>(null);
 	const [recommendationData, setRecommendationData] = useState<RecommendationResponse | null>(null);
 
 	const _fetchRecommendations = async () => {
-		if (homeState.seed === "") return; // TODO: can this happen?
+		if (homeState.seed === "") return;
 
 		try {
 			const data = await fetchRecommendations(homeState.seed, provider, provider === Provider.SPOTIFY ? auth?.token : undefined);
@@ -147,7 +148,7 @@ export default function Home(): JSX.Element {
 			const data = await fetchBaseTrack(homeState.seed, auth?.accessToken || "")
 			setBaseTrackData(data)
 		} catch(error) {
-			// TODO: implement errror
+			console.log("There was an error fetching the base track data", error)
 		}
 	}
 
@@ -155,15 +156,17 @@ export default function Home(): JSX.Element {
 	const [playlistDataState, setPlaylistData] = useState<PlaylistData | null>(null);
 
 	const _createPlaylist = async () => {
-		if (!auth) return; // TODO: when does this happen?
+		if (!auth) return;
 
-		let playlistData = undefined
+		let playlistData: Playlist | undefined = undefined
 		try {
-			playlistData = await createPlaylist(auth.user.id, auth.accessToken, "Music Discovery Playlist", `Playlist based on "${baseTrackData?.name} by ${baseTrackData?.artists[0].name}"`)
+			playlistData = await createPlaylist(auth.user.id, auth.accessToken, "Music Discovery Playlist", t("PLAYLIST_DESCRIPTION", {song: baseTrackData?.name, artist: baseTrackData?.artists[0].name}))
 		} catch (error) {
 			toast(t("PLAYLIST_CREATE_ERROR"), {type:"error"})
 			return
 		}
+
+		if(!playlistData) return
 
 		try {
 			await updatePlaylist(playlistData.id, auth.accessToken, getUris(recommendationData, provider))
@@ -180,11 +183,13 @@ export default function Home(): JSX.Element {
     	    <title>{t("TITLE")}</title>
     	  </Head>
     	  <main>
+			<h1 style={{textAlign: "center"}}>Music Discover</h1>
+			<Stack direction="row" spacing={1} sx={{ justifyContent: "center", alignItems: "center" }}>
+				<LanguageToogle />
+				<ProviderToggle defaultProvider={provider} setProvider={setProvider} />
+			</Stack>
 			<Stack direction="column" className={styles.container}>
-				<Stack direction="row" spacing={1} sx={{ justifyContent: "flex-start", alignItems: "center" }}>
-					<LanguageToogle />
-					<ProviderToggle setProvider={setProvider} />
-				</Stack>
+				{provider === Provider.SPOTIFY ? <ProviderNote /> : null}
 				<Stack direction="row">
 					<h1 className={styles.topTitle}>{t("TITLE")}</h1>
 				</Stack>
@@ -221,6 +226,7 @@ export default function Home(): JSX.Element {
 					</>
 					: null}
 			</Stack>
+			<Footer />
     	  </main>
     	</div>
   	);
