@@ -29,9 +29,10 @@ export default function Note() {
           i18nKey="NOTE_WEBSITE"
           t={t}
           components={[
-            <strong />,
+            <strong key="1" />,
 
             <Link
+              key="2"
               href="https://github.com/Victorsitou/musicdiscover"
               target="_blank"
               rel="noopener noreferrer"

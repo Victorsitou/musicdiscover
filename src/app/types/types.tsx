@@ -1,144 +1,153 @@
+export interface AudioFeaturesOptions {
+  target_energy?: number;
+  target_valence?: number;
+  target_danceability?: number;
+  target_popularity?: number;
+  max_speechiness?: number;
+  min_duration_ms?: number;
+}
+
 export interface RecommendationSeed {
-	afterFilteringSize: number
-	afterRelinkingSize: number
-	href: string
-	id: string
-	initialPoolSize: number
-	type: "artist" | "track" | "genre"
+  afterFilteringSize: number;
+  afterRelinkingSize: number;
+  href: string;
+  id: string;
+  initialPoolSize: number;
+  type: "artist" | "track" | "genre";
 }
 
 export interface Image {
-	url: string
-	height: number
-	width: number
+  url: string;
+  height: number;
+  width: number;
 }
 
 export interface SimplifiedArtist {
-	external_urls: {
-		spotify: string
-	}
-	href: string
-	id: string
-	name: string
-	type: string
-	uri: string
+  external_urls: {
+    spotify: string;
+  };
+  href: string;
+  id: string;
+  name: string;
+  type: string;
+  uri: string;
 }
 
 export interface Artist extends SimplifiedArtist {
-	followers: {
-		href: string | null
-		total: number
-	}
-	genres: string[]
-	images: Image[]
-	popularity: number
+  followers: {
+    href: string | null;
+    total: number;
+  };
+  genres: string[];
+  images: Image[];
+  popularity: number;
 }
 
 export interface Album {
-	album_type: string
-	total_tracks: number
-	available_markets: string[]
-	external_urls: {
-		spotify: string
-	}
-	href: string
-	id: string
-	images: Image[]
-	name: string
-	release_date: string
-	release_date_precision: string
-	restrictions: {
-		reason: "market" | "product" | "explicit"
-	}
-	type: string
-	uri: string
-	artists: SimplifiedArtist[]
+  album_type: string;
+  total_tracks: number;
+  available_markets: string[];
+  external_urls: {
+    spotify: string;
+  };
+  href: string;
+  id: string;
+  images: Image[];
+  name: string;
+  release_date: string;
+  release_date_precision: string;
+  restrictions: {
+    reason: "market" | "product" | "explicit";
+  };
+  type: string;
+  uri: string;
+  artists: SimplifiedArtist[];
 }
 
 export interface Track {
-	album: Album
-	artists: Artist[]
-	available_markets: string[]
-	disc_number: number
-	duration_ms: number
-	explicit: boolean
-	external_ids: {
-		isrc: string
-		ean: string
-		upc: string
-	}
-	external_urls: {
-		spotify: string
-	}
-	href: string
-	id: string
-	is_playable: boolean
-	linked_from: object // What is this?
-	restrictions: {
-		reason: "market" | "product" | "explicit"
-	}
-	name: string
-	popularity: number
-	preview_url: string | null
-	track_number: number
-	type: "track"
-	uri: string
-	is_local: boolean
+  album: Album;
+  artists: Artist[];
+  available_markets: string[];
+  disc_number: number;
+  duration_ms: number;
+  explicit: boolean;
+  external_ids: {
+    isrc: string;
+    ean: string;
+    upc: string;
+  };
+  external_urls: {
+    spotify: string;
+  };
+  href: string;
+  id: string;
+  is_playable: boolean;
+  linked_from: object; // What is this?
+  restrictions: {
+    reason: "market" | "product" | "explicit";
+  };
+  name: string;
+  popularity: number;
+  preview_url: string | null;
+  track_number: number;
+  type: "track";
+  uri: string;
+  is_local: boolean;
 }
 
 export interface PlaylistUser {
-	external_urls: {
-		spotify: string
-	}
-	followers: {
-		href: string | null
-		total: number
-	}
-	href: string
-	id: string
-	type: "user"
-	uri: string
-	display_name: string | null
+  external_urls: {
+    spotify: string;
+  };
+  followers: {
+    href: string | null;
+    total: number;
+  };
+  href: string;
+  id: string;
+  type: "user";
+  uri: string;
+  display_name: string | null;
 }
 
 export interface Session {
-	accessToken: string
-	expires: string
-	user: {
-		id: string
-		name: string
-		image: string
-		email: string
-	}
-	token: string
+  accessToken: string;
+  expires: string;
+  user: {
+    id: string;
+    name: string;
+    image: string;
+    email: string;
+  };
+  token: string;
 }
 
 export interface Playlist {
-	collaborative: boolean
-	description: string | null
-	external_urls: {
-		spotify: string
-	}
-	href: string
-	id: string
-	images: Image[]
-	name: string
-	public: boolean
-	snapshot_id: string
-	tracks: {
-		href: string
-		limit: number
-		next: string | null
-		offset: number
-		previous: string | null
-		total: number
-		items: Track[]
-	}
-	type: string
-	uri: string
+  collaborative: boolean;
+  description: string | null;
+  external_urls: {
+    spotify: string;
+  };
+  href: string;
+  id: string;
+  images: Image[];
+  name: string;
+  public: boolean;
+  snapshot_id: string;
+  tracks: {
+    href: string;
+    limit: number;
+    next: string | null;
+    offset: number;
+    previous: string | null;
+    total: number;
+    items: Track[];
+  };
+  type: string;
+  uri: string;
 }
 
 export enum Provider {
-	SPOTIFY = "spotify",
-	RECCO = "recco"
+  SPOTIFY = "spotify",
+  RECCO = "recco",
 }

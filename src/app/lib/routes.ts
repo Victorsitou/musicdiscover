@@ -1,17 +1,47 @@
 import { fetcher } from "@public-src";
 import useSWR from "swr";
-import { Provider, Track } from "../types/types";
+import { Provider, Track, AudioFeaturesOptions } from "../types/types";
 
 export async function fetchRecommendations(
   seed: string,
   provider: Provider,
-  token?: string
+  token?: string,
+  options?: AudioFeaturesOptions
 ) {
   let url = "";
+
   if (provider === Provider.SPOTIFY) {
-    url = `https://api.spotify.com/v1/recommendations?limit=100&seed_tracks=${seed}`;
+    let queryParams = "";
+    if (options) {
+      if (typeof options.target_energy === "number")
+        queryParams += `&target_energy=${options.target_energy}`;
+      if (typeof options.target_valence === "number")
+        queryParams += `&target_valence=${options.target_valence}`;
+      if (typeof options.target_danceability === "number")
+        queryParams += `&target_danceability=${options.target_danceability}`;
+      if (typeof options.target_popularity === "number")
+        queryParams += `&target_popularity=${options.target_popularity}`;
+      if (typeof options.max_speechiness === "number")
+        queryParams += `&max_speechiness=${options.max_speechiness}`;
+      if (typeof options.min_duration_ms === "number")
+        queryParams += `&min_duration_ms=${options.min_duration_ms}`;
+    }
+    url = `https://api.spotify.com/v1/recommendations?limit=100&seed_tracks=${seed}${queryParams}`;
   } else {
-    url = `https://api.reccobeats.com/v1/track/recommendation?size=100&seeds=${seed}`;
+    let queryParams = "";
+    if (options) {
+      if (typeof options.target_energy === "number")
+        queryParams += `&energy=${options.target_energy}`;
+      if (typeof options.target_valence === "number")
+        queryParams += `&valence=${options.target_valence}`;
+      if (typeof options.target_danceability === "number")
+        queryParams += `&danceability=${options.target_danceability}`;
+      if (typeof options.target_popularity === "number")
+        queryParams += `&popularity=${options.target_popularity}`;
+      if (typeof options.max_speechiness === "number")
+        queryParams += `&speechiness=${options.max_speechiness}`;
+    }
+    url = `https://api.reccobeats.com/v1/track/recommendation?size=100&seeds=${seed}${queryParams}`;
   }
   const data = fetch(
     url,
