@@ -8,11 +8,10 @@ interface ToastProviderProps {
 }
 
 export default function ToastProvider({ children }: ToastProviderProps) {
-
   return (
     <>
       {children}
-      <ToastContainer 
+      <ToastContainer
         position="top-center"
         autoClose={2500}
         hideProgressBar={false}
