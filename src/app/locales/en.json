@@ -19,5 +19,21 @@
   "SELECT_LANGUAGE": "Select Language",
   "SELECT_PROVIDER": "Select Provider",
   "PLAYLIST_DESCRIPTION": "Playlist based on \"{{song}} by {{artist}}\"",
-  "NOTE_WEBSITE": "This website only works if you use your own Spotify app and credentials. Check the <1>GitHub repository</1> for more information."
+  "NOTE_WEBSITE": "This website only works if you use your own Spotify app and credentials. Check the <1>GitHub repository</1> for more information.",
+  "SHOW_ADVANCED": "Show Advanced Options",
+  "HIDE_ADVANCED": "Hide Advanced Options",
+  "TARGET_MOOD": "Target Mood",
+  "TARGET_ENERGY": "Target Energy",
+  "TARGET_DANCEABILITY": "Target Danceability",
+  "TARGET_POPULARITY": "Target Popularity",
+  "MIN_DURATION": "Min Duration (Seconds)",
+  "AVOID_SPOKEN_WORD": "Avoid Spoken Word",
+  "MOOD_SAD": "Sad",
+  "MOOD_HAPPY": "Happy",
+  "ENERGY_CALM": "Calm",
+  "ENERGY_ENERGETIC": "Energetic",
+  "DANCEABILITY_LOW": "Low",
+  "DANCEABILITY_HIGH": "High",
+  "POPULARITY_NICHE": "Niche",
+  "POPULARITY_POPULAR": "Popular"
 }
