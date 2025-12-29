@@ -309,17 +309,10 @@ export default function Home(): JSX.Element {
                 {t("SEED_EXAMPLE")}
               </Typography>
 
-              <Box
-                sx={{
-                  width: "100%",
-                  mt: 2,
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
+              <Box sx={{ width: "100%", mt: 2 }}>
                 <Button
                   onClick={() => setShowAdvanced(!showAdvanced)}
-                  sx={{ mb: 2 }}
+                  sx={{ mb: 2, width: "100%", textAlign: "center" }}
                 >
                   {showAdvanced ? t("HIDE_ADVANCED") : t("SHOW_ADVANCED")}
                 </Button>
