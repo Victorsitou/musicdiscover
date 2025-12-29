@@ -46,6 +46,7 @@ https://tu-dominio-de-vercel/api/auth/signin/spotify
 SPOTIFY_CLIENT_ID=tu_client_id
 SPOTIFY_CLIENT_SECRET=tu_client_secret
 NEXTAUTH_SECRET=tu_nextauth_secret
+NEXTAUTH_URL=http://127.0.0.1:3000
 ```
 
 8. ¡Disfruta descubriendo nueva música!
